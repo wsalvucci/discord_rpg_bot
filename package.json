@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/wsalvucci/discord_rpg_bot#readme",
   "dependencies": {
+    "moment": "^2.24.0",
     "mysql": "^2.17.1"
   }
 }
