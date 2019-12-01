@@ -1,6 +1,11 @@
 # Discord RPG
+# 0.0.2
 
 ### Recent Releases
+0.0.2
+* Created basic file structure for the database, bot, and commands
+* Created gitignore and package.json
+
 0.0.1
 * Created a ReadMe and planned out first roadmap
 
