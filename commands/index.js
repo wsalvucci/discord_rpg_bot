@@ -1,1 +1,2 @@
 require('./createAccount')
+require('./createCharacter')
