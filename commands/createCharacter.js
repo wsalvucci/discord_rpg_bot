@@ -37,42 +37,40 @@ function createNewCharacter(msg, user_id, character_class, character_name) {
     })
 }
 
-bot.on('message', msg => {
-    if (msg.content.toLowerCase() === '??createcharacter') {
-        query('SELECT * FROM user WHERE user_id = ?', [msg.author.id]).then(data => {
-            if (data.length !== 0) {
-                query('SELECT * FROM user_character WHERE user_id = ?', [msg.author.id]).then(data => {
-                    if (data.length > 0) {
-                        msg.reply('You cannot have more than one character at this time').catch(err => {console.error(err)})
-                    } else {
-                        var classesEmbed = new Discord.RichEmbed()
-                        classesEmbed.addField('1', 'Soldier', true)
-                        classesEmbed.addField('2', 'Mage', true)
-                        classesEmbed.addField('3', 'Ranger', true)
-                        classesEmbed.addField('4', 'Priest', true)
-                        msg.channel.send(classesEmbed)
-                        var classResponseFilter = new Discord.MessageCollector(msg.channel, m => m.author.id === msg.author.id, {maxMatches: 1, time: 15000})
-                        classResponseFilter.on('end', clasCol => {
-                            var chosenClass = clasCol.first().content
-                            if (isNaN(parseInt(chosenClass)) || chosenClass <= 0 || chosenClass > 4) {
-                                msg.channel.send('Not a valid class number').catch(err => {console.error(err)})
-                            } else {
-                                msg.channel.send('Give your new character a name! (At least 3 characters long)')
-                                var nameResponseFilter = new Discord.MessageCollector(msg.channel, m => m.author.id === msg.author.id, {maxMatches: 1, time: 30000})
-                                nameResponseFilter.on('end', nameCol => {
-                                    var chosenName = nameCol.first().content
-                                    msg.reply('Making a character of class ' + chosenClass + ' with name ' + chosenName).catch(err => {console.error(err)})
-                                    createNewCharacter(msg, msg.author.id, chosenClass, chosenName)
-                                })
-                            }
-                        })
-                    }
-                })
-            } else {
-                msg.reply('You dont have an account!').catch(err => {console.error(err)})
-            }
-        }, err => {
-            msg.reply('Error while creating character')
-        })
-    }
-})
+module.exports = msg => {
+    query('SELECT * FROM user WHERE user_id = ?', [msg.author.id]).then(data => {
+        if (data.length !== 0) {
+            query('SELECT * FROM user_character WHERE user_id = ?', [msg.author.id]).then(data => {
+                if (data.length > 0) {
+                    msg.reply('You cannot have more than one character at this time').catch(err => {console.error(err)})
+                } else {
+                    var classesEmbed = new Discord.RichEmbed()
+                    classesEmbed.addField('1', 'Soldier', true)
+                    classesEmbed.addField('2', 'Mage', true)
+                    classesEmbed.addField('3', 'Ranger', true)
+                    classesEmbed.addField('4', 'Priest', true)
+                    msg.channel.send(classesEmbed)
+                    var classResponseFilter = new Discord.MessageCollector(msg.channel, m => m.author.id === msg.author.id, {maxMatches: 1, time: 15000})
+                    classResponseFilter.on('end', clasCol => {
+                        var chosenClass = clasCol.first().content
+                        if (isNaN(parseInt(chosenClass)) || chosenClass <= 0 || chosenClass > 4) {
+                            msg.channel.send('Not a valid class number').catch(err => {console.error(err)})
+                        } else {
+                            msg.channel.send('Give your new character a name! (At least 3 characters long)')
+                            var nameResponseFilter = new Discord.MessageCollector(msg.channel, m => m.author.id === msg.author.id, {maxMatches: 1, time: 30000})
+                            nameResponseFilter.on('end', nameCol => {
+                                var chosenName = nameCol.first().content
+                                msg.reply('Making a character of class ' + chosenClass + ' with name ' + chosenName).catch(err => {console.error(err)})
+                                createNewCharacter(msg, msg.author.id, chosenClass, chosenName)
+                            })
+                        }
+                    })
+                }
+            })
+        } else {
+            msg.reply('You dont have an account!').catch(err => {console.error(err)})
+        }
+    }, err => {
+        msg.reply('Error while creating character')
+    })
+}
